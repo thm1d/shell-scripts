@@ -1,0 +1,305 @@
+<p><strong><em>NOTE: For easier to read instructions download the PDF resource attached to this lesson.</em></strong></p><h1><strong><em>Goal:</em></strong></h1>
+
+<p>The goal of this exercise is to create a shell script that adds users to the same Linux system as the script is executed on.</p>
+
+
+
+
+
+<h1><strong><em>Scenario:</em></strong></h1>
+
+
+
+
+
+<p>Imagine that you're working as a Linux System Administrator for a fast growing company. &nbsp;The latest company initiative requires you to build and deploy dozens of servers. &nbsp;You're falling behind schedule and are going to miss your deadline for these new server deployments because you are constantly being interrupted by the help desk calling you to create new Linux accounts for all the people in the company who have been recruited to test out the company's newest Linux-based application.</p>
+
+
+
+
+
+<p>In order to meet your deadline and keep your sanity, you decide to write a shell script that will create new user accounts. &nbsp;Once you're done with the shell script you can put the help desk in charge of creating new accounts which will finally allow you to work uninterrupted and complete your server deployments on time.</p>
+
+
+
+
+
+<h1><strong><em>Shell Script Requirements:</em></strong></h1>
+
+
+
+
+
+<p>You think about what the shell script must do and how you would like it operate. &nbsp;You come up with the following list.</p>
+
+
+
+
+
+<p>The script:</p>
+
+
+
+<ul><li><p>Is named "add-local-user.sh".</p></li><li><p>Enforces that it be executed with superuser (root) privileges. &nbsp;If the script is not executed with superuser privileges it will not attempt to create a user and returns an exit status of 1.</p></li><li><p>Prompts the person who executed the script to enter the username (login), the name for person who will be using the account, and the initial password for the account.</p></li><li><p>Creates a new user on the local system with the input provided by the user.</p></li><li><p>Informs the user if the account was not able to be created for some reason. &nbsp;If the account is not created, the script is to return an exit status of 1.</p></li><li><p>Displays the username, password, and host where the account was created. &nbsp;This way the help desk staff can copy the output of the script in order to easily deliver the information to the new account holder.</p></li></ul>
+
+
+
+
+
+<p>After coming up with your list, you realize that you're not sure where to get the hostname information. &nbsp;You decide to wait until you start writing your shell script to check the bash man page to see if there are any builtin commands or variables that could provide this information.</p>
+
+
+
+<p>You decide to develop your script on a Linux virtual machine running on your local operating system. &nbsp;This way you can test the script's functionality before uploading it to the server where it will be used by the help desk staff.</p>
+
+
+
+
+
+<h1><strong><em>Create a Virtual Machine:</em></strong></h1>
+
+
+
+
+
+<p>First, start a command line session on your local machine. &nbsp;Next, move into the working folder you created for this course.</p>
+
+
+
+
+
+<table><tbody><tr><td><p>cd shellclass</p></td></tr></tbody></table>
+
+
+
+
+
+<p>Initialize the vagrant project using the usual process of creating a directory, changing into that directory, and running "vagrant init". &nbsp;We'll name this vagrant project "localusers".</p>
+
+
+
+
+
+<table><tbody><tr><td><p>mkdir localusers</p><p>cd localusers</p><p>vagrant init jasonc/centos7</p></td></tr></tbody></table>
+
+
+
+
+
+
+
+<h2><strong>Configure the Virtual Machine</strong></h2>
+
+
+
+
+
+<p>Edit the Vagrantfile and set the hostname of the virtual machine to "localusers".</p>
+
+
+
+
+
+<table><tbody><tr><td><p>config.vm.hostname = "localusers"</p></td></tr></tbody></table>
+
+
+
+
+
+<h2><strong>Start the Virtual Machine and Log into It</strong></h2>
+
+
+
+<p><br>Now you're ready to start the VM and connect to it.</p>
+
+
+
+
+
+<table><tbody><tr><td><p>vagrant up</p><p>vagrant ssh</p></td></tr></tbody></table>
+
+
+
+
+
+<h2><strong>Navigate to the </strong><strong>/vagrant</strong><strong> Directory</strong></h2>
+
+
+
+
+
+<table><tbody><tr><td><p>cd /vagrant</p></td></tr></tbody></table>
+
+
+
+
+
+<h1><strong><em>Write the Shell Script</em></strong></h1>
+
+
+
+<p>At this point, you can either create the script inside the virtual machine using the vim, nano, or emacs text editors or you can create the file using your favorite text editor on your local operating system. &nbsp;(Atom from https://atom.io/ is a good choice.)<at this="" point,="" you="" can="" either="" create="" the="" script="" inside="" virtual="" machine="" using="" vim,="" nano,="" or="" emacs="" text="" editors="" file="" your="" favorite="" editor="" on="" local="" operating="" system.="" &nbsp;(atom="" from="" ###a="" href="https://atom.io/"  rel="nofollow"><br></at></p>
+
+
+
+
+
+<p>When creating your script, refer back to the <span class="redactor-unlink">shell script requirements</span>. &nbsp;If you want or need more detailed steps to help you write your script, refer to the <span class="redactor-unlink">pseudocode</span> at the end of this document. &nbsp;It was intentionally placed at the end of the document because I want to encourage you to write the script on your own. &nbsp;It's fine if you need the pseudocode. &nbsp;As you get more scripting practice, you'll be able to script without any additional aids.</p>
+
+
+
+
+
+<h1><strong><em>Test Your Script</em></strong></h1>
+
+
+
+
+
+<p>Once you've finished writing the script, test it by creating the following accounts:</p>
+
+
+
+
+
+<ul><li><p>Username: einstein</p></li><ul><li><p>Real Name: Albert Einstein</p></li><li><p>Password: E=mc2theory$</p></li></ul><li><p>Username: isaac</p></li><ul><li><p>Real Name: Isaac Newton</p></li><li><p>Password: @ppleFell1666</p></li></ul><li><p>Username: tedison</p></li><ul><li><p>Real Name: Thomas Edison</p></li><li><p>Password: Light.Bulb1</p></li></ul></ul>
+
+
+
+
+
+<p>Remember that the first time you execute the script you'll need to make sure it has executable permissions.</p>
+
+
+
+
+
+<table><tbody><tr><td><p>chmod 755 add-local-user.sh</p></td></tr></tbody></table>
+
+
+
+
+
+<p>Here is an example run of the script. &nbsp;(Portions typed are in bold.)</p>
+
+
+
+
+
+<table><tbody><tr><td><p><strong>sudo ./add-local-user.sh</strong></p><p>Enter the username to create: <strong>einstein</strong></p><p>Enter the name of the person or application that will be using this account: <strong>Albert Einstein</strong></p><p>Enter the password to use for the account: <strong>E=mc2theory$</strong></p><p>Changing password for user einstein.</p><p>passwd: all authentication tokens updated successfully.</p><p>Expiring password for user einstein.</p><p>passwd: Success</p>
+<p>username:</p><p>einstein</p>
+<p>password:</p><p>E=mc2theory$</p>
+<p>host:</p><p>localusers</p></td></tr></tbody></table>
+
+
+
+
+
+<p>Make sure the accounts have been created by examining the last 3 lines of the /etc/passwd file.</p>
+
+
+
+
+
+<table><tbody><tr><td><p>cat /etc/passwd</p><p>root:x:0:0:root:/root:/bin/bash</p><p>... # additional accounts will be displayed</p><p>einstein:x:1001:1001:Albert Einstein:/home/einstein:/bin/bash</p><p>isaac:x:1002:1002:Isaac Newton:/home/isaac:/bin/bash</p><p>tedison:x:1003:1003:Thomas Edison:/home/tedison:/bin/bash</p></td></tr></tbody></table>
+
+
+
+
+
+<p>(NOTE: You could have also used tail -3 /etc/passwd to display just the last 3 lines of the file.)</p>
+
+
+
+
+
+<p>Switch to the einstein user. &nbsp;Because the script forces a password change upon first login, create a new password for the einstein user. &nbsp;(Suggested password: "CrazyHair!")</p>
+
+
+
+
+
+<table><tbody><tr><td><p>su - einstein</p></td></tr></tbody></table>
+
+
+
+
+
+
+
+<p>Once you've changed the password of the user, exit out of the session to return to the vagrant user.</p>
+
+
+
+
+
+<table><tbody><tr><td><p>exit</p></td></tr></tbody></table>
+
+
+
+
+
+
+
+<p>Test to make sure that the script exits with a non-zero exit status if the user does not use superuser (root) privileges. &nbsp;(Portions typed are in bold.)</p>
+
+
+
+
+
+<table><tbody><tr><td><p><strong>./add-local-user.sh</strong></p><p>Please run with sudo or as root.</p><p><strong>echo ${?}</strong></p><p>1</p></td></tr></tbody></table>
+
+
+
+
+
+
+
+<h1><strong><em>Reference Material:</em></strong></h1>
+
+
+
+
+
+<h2><strong>Vagrantfile for localusers</strong></h2>
+
+
+
+
+
+<p>Here are the contents of the shellclass/localusers/Vagrantfile file with all the comments removed.</p>
+
+
+
+
+
+<table><tbody><tr><td><p>Vagrant.configure(2) do |config|</p><p> &nbsp;config.vm.box = "jasonc/centos7"</p><p> &nbsp;config.vm.hostname = "localusers"</p><p>end</p></td></tr></tbody></table>
+
+
+
+
+
+
+
+<h2><strong>Pseudocode</strong></h2>
+
+
+
+
+
+<p>You can use the following pseudocode to help you with the logic and flow of your script.</p>
+
+
+
+
+
+<table><tbody><tr><td><p># Make sure the script is being executed with superuser privileges.</p>
+<p># Get the username (login).</p>
+<p># Get the real name (contents for the description field).</p>
+<p># Get the password.</p>
+<p># Create the user with the password.</p>
+<p># Check to see if the useradd command succeeded.</p>
+<p># Set the password.</p>
+<p># Check to see if the passwd command succeeded.</p>
+<p># Force password change on first login.</p>
+<p># Display the username, password, and the host where the user was created. </p></td></tr></tbody></table>
